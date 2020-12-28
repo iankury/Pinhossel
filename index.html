@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>Pinhossel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    #pinhossel {
+      position: relative;
+      width: 100vw;
+      height: calc(0.4 * 100vw);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <script src="jquery.js"></script>
+  <script src="pinhossel.js"></script>
+  <script>
+    const images = Pinhossel.Images_From_Links([
+      './images/01.jpg',
+      './images/02.jpg',
+      './images/03.jpg'
+    ])
+  </script>
+
+  <div id="pinhossel"></div>
+
+  <script>
+    Pinhossel.Build(document.getElementById('pinhossel'), images)
+
+    Pinhossel.Run(true)
+  </script>
+</body>
+</html>
