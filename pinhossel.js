@@ -51,6 +51,7 @@ const Pinhossel = {
       height: 0.05 * mult * h,
       zIndex: 8,
       pointerEvents: 'none',
+      touchAction: 'none',
       top: '50%',
       transform: 'translate(0, -50%)'
     })
@@ -59,10 +60,18 @@ const Pinhossel = {
   },
 
   Run: function (autorun = false) {
-    $('.pinhosselement')
-      .mousedown(this.Down_Handler)
-      .mousemove(this.Move_Handler)
-      .mouseup(this.Up_Handler)
+    if (window.innerHeight > window.innerWidth) {
+      $('.pinhosselement')
+        .on('touchstart', this.Down_Handler)
+        .on('touchmove', this.Move_Handler)
+        .on('touchend', this.Up_Handler)
+    }
+    else {
+      $('.pinhosselement')
+        .mousedown(this.Down_Handler)
+        .mousemove(this.Move_Handler)
+        .mouseup(this.Up_Handler)
+    }
   },
 
   animation_running: false,
@@ -95,9 +104,21 @@ const Pinhossel = {
     })
   },
 
+  EVX: function (e) {
+    return window.innerHeight <= window.innerWidth ? e.clientX
+      : e.originalEvent.touches[0].clientX
+  },
+
   Click_Handler: function (e) {
+    e.preventDefault()
+    if (window.innerHeight > window.innerWidth) {
+      $(e.target).css('left', '0')
+      $(e.target.prev).css('left', '-100%')
+      $(e.target.next).css('left', '100%')
+      return
+    }
     const rect = e.target.getBoundingClientRect()
-    const x = e.clientX - rect.left, y = e.clientY - rect.top
+    const x = e.clientX - rect.left
 
     if (x < rect.width / 2)
       Pinhossel.Go_Left(e.target, true)
@@ -106,10 +127,13 @@ const Pinhossel = {
   },
 
   initial_x: 0,
+  delta_x: 0,
   moving: false,
 
   Down_Handler: function (e) {
-    Pinhossel.initial_x = e.clientX
+    e.preventDefault()
+    Pinhossel.delta_x = 0
+    Pinhossel.initial_x = Pinhossel.EVX(e)
     Pinhossel.moving = true
   },
 
@@ -117,13 +141,13 @@ const Pinhossel = {
     e.preventDefault()
     if (!Pinhossel.moving)
       return
-    const delta_x = e.clientX - Pinhossel.initial_x
+    Pinhossel.delta_x = Pinhossel.EVX(e) - Pinhossel.initial_x
     const x = e.target
-    x.style.left = delta_x
-    if (delta_x > 0) 
-      $(x.prev).css('left', `calc(-100% + ${delta_x}px)`)
+    x.style.left = Pinhossel.delta_x
+    if (Pinhossel.delta_x > 0) 
+      $(x.prev).css('left', `calc(-100% + ${Pinhossel.delta_x}px)`)
     else
-      $(x.next).css('left', `calc(100% + ${delta_x}px)`)
+      $(x.next).css('left', `calc(100% + ${Pinhossel.delta_x}px)`)
   },
 
   Up_Handler: function (e) {
@@ -131,10 +155,9 @@ const Pinhossel = {
     if (Pinhossel.animation_running)
       return
 
-    const delta_x = e.clientX - Pinhossel.initial_x
-    if (Math.abs(delta_x) < 80)
+    if (Math.abs(Pinhossel.delta_x) < 60)
       Pinhossel.Click_Handler(e)
-    else if (delta_x > 0)
+    else if (Pinhossel.delta_x > 0)
       Pinhossel.Go_Left(e.target)
     else
       Pinhossel.Go_Right(e.target)
