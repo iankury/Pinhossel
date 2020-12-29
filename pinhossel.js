@@ -28,7 +28,7 @@ const Pinhossel = {
     if (kids.length == 1) {
       $(kids[0]).css('width', `${$(pi).css('width')}`)
       pi.appendChild(kids[0])
-      pi.css('cursor', 'auto')
+      $(pi).css('cursor', 'auto')
       return
     }
 
