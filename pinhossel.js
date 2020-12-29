@@ -28,6 +28,7 @@ const Pinhossel = {
     if (kids.length == 1) {
       $(kids[0]).css('width', `${$(pi).css('width')}`)
       pi.appendChild(kids[0])
+      pi.css('cursor', 'auto')
       return
     }
 
@@ -143,7 +144,7 @@ const Pinhossel = {
       return
     Pinhossel.delta_x = Pinhossel.EVX(e) - Pinhossel.initial_x
     const x = e.target
-    x.style.left = Pinhossel.delta_x
+    $(x).css('left', `${Pinhossel.delta_x}px`)
     if (Pinhossel.delta_x > 0) 
       $(x.prev).css('left', `calc(-100% + ${Pinhossel.delta_x}px)`)
     else
