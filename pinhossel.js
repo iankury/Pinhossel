@@ -4,7 +4,7 @@ const Pinhossel = {
   initial_x: 0,
   delta_x: 0,
   moving: false,
-  initial_e: undefined,
+  initial_target: undefined,
 
   Target: function (e) {
     return window.innerHeight <= window.innerWidth ? e.target
@@ -98,7 +98,7 @@ const Pinhossel = {
   },
 
   Down_Handler: function (e) {
-    Pinhossel.initial_e = e
+    Pinhossel.initial_target = Pinhossel.Target(e)
     Pinhossel.delta_x = 0
     Pinhossel.initial_x = Pinhossel.EVX(e)
     Pinhossel.moving = true
@@ -119,7 +119,11 @@ const Pinhossel = {
         $(targ.next).css('left', `calc(100% + ${Pinhossel.delta_x}px)`)
     }
     else {
-      Pinhossel.Up_Handler(Pinhossel.initial_e)
+      Pinhossel.moving = false
+      const el = Pinhossel.initial_target
+      $(el).animate({ left: '0' }, Pinhossel.SPEED)
+      $(el.prev).animate({ left: '-100%' }, Pinhossel.SPEED)
+      $(el.next).animate({ left: '100%' }, Pinhossel.SPEED)
     }
   },
 
