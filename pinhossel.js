@@ -131,18 +131,21 @@ const Pinhossel = {
     }
     else {
       Pinhossel.moving = false
+      Pinhossel.delta_x = Pinhossel.delta_y = 0
       Pinhossel.Reset()
-      $('body').css('background-color', 'black')
     }
   },
 
   Up_Handler: function (e) {
+    if (!Pinhossel.moving)
+      return
     Pinhossel.moving = false
     if (Pinhossel.animation_running)
       return
 
     if (Math.abs(Pinhossel.delta_y) > Math.abs(Pinhossel.delta_x)
-        && Math.abs(Pinhossel.delta_y) > 40) {
+      && Math.abs(Pinhossel.delta_y) > 40) {
+      Pinhossel.delta_x = Pinhossel.delta_y = 0
       Pinhossel.Reset()
       return
     }
@@ -161,6 +164,7 @@ const Pinhossel = {
       Pinhossel.Go_Left(targ)
     else
       Pinhossel.Go_Right(targ)
+    Pinhossel.delta_x = Pinhossel.delta_y = 0
   },
 
   Reset: function () {
