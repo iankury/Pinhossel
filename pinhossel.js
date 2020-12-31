@@ -2,7 +2,9 @@ const Pinhossel = {
   SPEED: 250,
   animation_running: false,
   initial_x: 0,
+  initial_y: 0,
   delta_x: 0,
+  delta_y: 0, 
   moving: false,
   initial_target: undefined,
 
@@ -14,6 +16,11 @@ const Pinhossel = {
   EVX: function (e) {
     return window.innerHeight <= window.innerWidth ? e.clientX
       : e.changedTouches.item(0).clientX
+  },
+
+  EVY: function (e) {
+    return window.innerHeight <= window.innerWidth ? e.clientY
+      : e.changedTouches.item(0).clientY
   },
 
   Build_Cyclic: function (pi, kids) {
@@ -101,6 +108,7 @@ const Pinhossel = {
     Pinhossel.initial_target = Pinhossel.Target(e)
     Pinhossel.delta_x = 0
     Pinhossel.initial_x = Pinhossel.EVX(e)
+    Pinhossel.initial_y = Pinhossel.EVY(e)
     Pinhossel.moving = true
   },
 
@@ -112,6 +120,9 @@ const Pinhossel = {
 
     if (targ.className.includes('pinhosselement')) {
       Pinhossel.delta_x = Pinhossel.EVX(e) - Pinhossel.initial_x
+      Pinhossel.delta_y = Pinhossel.EVY(e) - Pinhossel.initial_y
+      if (Math.abs(Pinhossel.delta_y) > Math.abs(Pinhossel.delta_x))
+        return
       $(targ).css('left', `${Pinhossel.delta_x}px`)
       if (Pinhossel.delta_x > 0)
         $(targ.prev).css('left', `calc(-100% + ${Pinhossel.delta_x}px)`)
@@ -120,10 +131,8 @@ const Pinhossel = {
     }
     else {
       Pinhossel.moving = false
-      const el = Pinhossel.initial_target
-      $(el).animate({ left: '0' }, Pinhossel.SPEED)
-      $(el.prev).animate({ left: '-100%' }, Pinhossel.SPEED)
-      $(el.next).animate({ left: '100%' }, Pinhossel.SPEED)
+      Pinhossel.Reset()
+      $('body').css('background-color', 'black')
     }
   },
 
@@ -131,6 +140,12 @@ const Pinhossel = {
     Pinhossel.moving = false
     if (Pinhossel.animation_running)
       return
+
+    if (Math.abs(Pinhossel.delta_y) > Math.abs(Pinhossel.delta_x)
+        && Math.abs(Pinhossel.delta_y) > 40) {
+      Pinhossel.Reset()
+      return
+    }
 
     const targ = Pinhossel.Target(e)
     const rect = targ.getBoundingClientRect()
@@ -146,6 +161,13 @@ const Pinhossel = {
       Pinhossel.Go_Left(targ)
     else
       Pinhossel.Go_Right(targ)
+  },
+
+  Reset: function () {
+    const el = Pinhossel.initial_target
+    $(el).animate({ left: '0' }, Pinhossel.SPEED)
+    $(el.prev).animate({ left: '-100%' }, Pinhossel.SPEED)
+    $(el.next).animate({ left: '100%' }, Pinhossel.SPEED)
   },
 
   Go_Right: function (x, clicked = false) {
