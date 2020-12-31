@@ -12,10 +12,21 @@
       position: relative;
       width: 100vw;
       height: 40vw;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
       cursor: pointer;
+    }
+
+    #prefix {
+      position: relative;
+      width: 100vw;
+      height: 80vh;
+      background-color: aquamarine;
+    }
+
+    #suffix {
+      position: relative;
+      width: 100vw;
+      height: 180vh;
+      background-color: lightcoral;
     }
   </style>
 </head>
@@ -30,7 +41,9 @@
     ])
   </script>
 
+  <div id="prefix"></div>
   <div id="pinhossel"></div>
+  <div id="suffix"></div>
 
   <script>
     Pinhossel.Build(document.getElementById('pinhossel'), images)
